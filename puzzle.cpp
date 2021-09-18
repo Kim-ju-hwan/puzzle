@@ -1,6 +1,13 @@
 ﻿#include <bangtal>
 using namespace bangtal;
 
+bool change(ObjectPtr object1, ObjectPtr object2)
+{
+	object1->pick();
+	object2->pick();
+
+	return true;
+}
 
 int main()
 {
@@ -27,27 +34,39 @@ int main()
 			});
 		return true;
 		});
-	int x1=255, x2=425, x3=595;
-	int y1=400, y2=660, y3=920;
-	auto piece1 = Object::create("Images/모나리자1.png", scene,x1, y3);
+
+	//위치 설정
+	int x[3] = { 255,425,590 };
+	int y[3] = { 400,660,915 };
+	auto piece1 = Object::create("Images/모나리자1.png", scene,x[0], y[2]);
 	piece1->setScale(0.5f);
-	auto piece2 = Object::create("Images/모나리자2.png", scene, x2, y3);
+	auto piece2 = Object::create("Images/모나리자2.png", scene, x[1], y[2]);
 	piece2->setScale(0.5f);
-	auto piece3 = Object::create("Images/모나리자3.png", scene, x3, y3);
+	auto piece3 = Object::create("Images/모나리자3.png", scene, x[2], y[2]);
 	piece3->setScale(0.5f);
-	auto piece4 = Object::create("Images/모나리자4.png", scene, x1, y2);
+	auto piece4 = Object::create("Images/모나리자4.png", scene, x[0], y[1]);
 	piece4->setScale(0.5f);
-	auto piece5 = Object::create("Images/모나리자5.png", scene, x2, y2);
+	auto piece5 = Object::create("Images/모나리자5.png", scene, x[1], y[1]);
 	piece5->setScale(0.5f);
-	auto piece6 = Object::create("Images/모나리자6.png", scene, x3, y2);
+	auto piece6 = Object::create("Images/모나리자6.png", scene, x[2], y[1]);
 	piece6->setScale(0.5f);
-	auto piece7 = Object::create("Images/모나리자7.png", scene, x1, y1);
+	auto piece7 = Object::create("Images/모나리자7.png", scene, x[0], y[0]);
 	piece7->setScale(0.5f);
-	auto piece8 = Object::create("Images/모나리자8.png", scene, x2, y1);
+	auto piece8 = Object::create("Images/모나리자8.png", scene, x[1], y[0]);
 	piece8->setScale(0.5f);
-	auto piece9 = Object::create("Images/모나리자9.jpg", scene, x3, y1);
-	piece9->setScale(0.5f);
-	showMessage("제한시간은 1분! 퍼즐을 풀어보세요!!");
+	auto blank = Object::create("Images/빈칸.png", scene, x[2], y[0]);
+	blank->setScale(0.5f);
+	
+	int count = 0;
+	auto button = Object::create("Images/성공.png", scene, 0, 400);
+	button->setScale(0.2f);
+	button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		endGame();
+		return true;
+		});
+
+	
+
+	showMessage("제한시간은 1분! 퍼즐을 풀어보세요, 버튼을 누르면 종료됩니다.");
 	startGame(scene);
 }
-
