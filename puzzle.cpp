@@ -148,6 +148,7 @@ int main()
 		return true;
 		});
 
+	//게임을 종료하는 버튼
 	auto button = Object::create("Images/성공.png", scene, 0, 400);
 	button->setScale(0.2f);
 	button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
@@ -155,6 +156,7 @@ int main()
 		return true;
 		});
 
+	//게임방법 설명하는 버튼 생성
 	auto howto = Object::create("Images/게임방법.png", scene, 0, 1000);
 	howto->setScale(0.8f);
 
