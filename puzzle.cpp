@@ -1,6 +1,7 @@
 ﻿#include <bangtal>
 using namespace bangtal;
 
+//x,y,좌표와 object를 입력받아 조각을 저장한다.
 class Piece {
 public:
 	ObjectPtr object;
@@ -22,31 +23,32 @@ int main()
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 
 	scene = Scene::create("퍼즐 ", "Images/배경.png");
+
 	
-	//위치 설정
-	int x[3] = { 255,425,590 };
-	int y[3] = { 400,660,915 };
-	auto piece1 = Object::create("Images/모나리자1.png", scene,x[0], y[2]);
+	//조각들 위치 설정, 이미지 배정
+	const int x[3] = { 255,425,590 };
+	const int y[3] = { 400,660,915 };
+	auto piece1 = Object::create("Images/모나리자1.png", scene,x[1], y[2]);
 	piece1->setScale(0.5f);
-	Piece piece_1(x[0], y[2], piece1,scene);
-	auto piece2 = Object::create("Images/모나리자2.png", scene, x[1], y[2]);
+	Piece piece_1(x[1], y[2], piece1,scene);
+	auto piece2 = Object::create("Images/모나리자2.png", scene, x[0], y[2]);
 	piece2->setScale(0.5f);
-	Piece piece_2(x[1], y[2], piece2, scene);
-	auto piece3 = Object::create("Images/모나리자3.png", scene, x[2], y[2]);
+	Piece piece_2(x[0], y[2], piece2, scene);
+	auto piece3 = Object::create("Images/모나리자3.png", scene, x[1], y[1]);
 	piece3->setScale(0.5f);
-	Piece piece_3(x[2], y[2], piece3, scene);
-	auto piece4 = Object::create("Images/모나리자4.png", scene, x[0], y[1]);
+	Piece piece_3(x[1], y[1], piece3, scene);
+	auto piece4 = Object::create("Images/모나리자4.png", scene, x[0], y[0]);
 	piece4->setScale(0.5f);
-	Piece piece_4(x[0], y[1], piece4, scene);
-	auto piece5 = Object::create("Images/모나리자5.png", scene, x[1], y[1]);
+	Piece piece_4(x[0], y[0], piece4, scene);
+	auto piece5 = Object::create("Images/모나리자5.png", scene, x[2], y[2]);
 	piece5->setScale(0.5f);
-	Piece piece_5(x[1], y[1], piece5, scene);
+	Piece piece_5(x[2], y[2], piece5, scene);
 	auto piece6 = Object::create("Images/모나리자6.png", scene, x[2], y[1]);
 	piece6->setScale(0.5f);
 	Piece piece_6(x[2], y[1], piece6, scene);
-	auto piece7 = Object::create("Images/모나리자7.png", scene, x[0], y[0]);
+	auto piece7 = Object::create("Images/모나리자7.png", scene, x[0], y[1]);
 	piece7->setScale(0.5f);
-	Piece piece_7(x[0], y[0], piece7, scene);
+	Piece piece_7(x[0], y[1], piece7, scene);
 	auto piece8 = Object::create("Images/모나리자8.png", scene, x[1], y[0]);
 	piece8->setScale(0.5f);
 	Piece piece_8(x[1], y[0], piece8, scene);
@@ -55,6 +57,7 @@ int main()
 	Piece Blank(x[2], y[0], blank, scene);
 
 	int a, b;
+
 	//마우스로 클릭하면 빈칸으로 이동하도록 설정
 
 	piece1->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
@@ -152,6 +155,40 @@ int main()
 		return true;
 		});
 
-	showMessage("제한시간은 1분! 퍼즐을 풀어보세요, 버튼을 누르면 종료됩니다.");
+	auto howto = Object::create("Images/게임방법.png", scene, 0, 1000);
+	howto->setScale(0.8f);
+
+	auto explain = Object::create("Images/how.png", scene, 25, 600, false);
+	explain->setScale(1.5f);
+
+	howto->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		explain->show();
+		return true;
+		});
+
+	explain->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		explain->hide();
+		return true;
+		});
+
+	//60초 타이머 생성
+	auto timer1 = Timer::create(60);
+	showTimer(timer1);
+	timer1->start();
+
+	timer1->setOnTimerCallback([&](TimerPtr timer)->bool {
+		showMessage("실패ㅠㅠ");
+		auto timer2 = Timer::create(1);
+		timer2->start();
+
+		timer2->setOnTimerCallback([&](TimerPtr timer)->bool {
+			endGame();
+			return true;
+			});
+		return true;
+		});
+
+
+	showMessage("제한시간은 1분! 퍼즐을 풀어보세요. ");
 	startGame(scene);
 }
