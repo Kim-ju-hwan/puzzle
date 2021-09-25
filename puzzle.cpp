@@ -48,8 +48,9 @@ int randmove() {
 
 //셔플해주는 함수
 void game_set() {
-	for (int i = 0;i < 10;i++) {
-		game_move(randmove());
+	for (int i = 0;i < 1000;i++) {
+		if(check(randmove()))
+		    game_move(randmove());
 	}
 }
 
@@ -65,32 +66,33 @@ bool checkend() {
 void Start() {
 	scene = Scene::create("퍼즐 ", "Images/배경.png");
 	char path[30];
-	//60초 타이머 생성
-	auto timer1 = Timer::create(60);
+	
+	//타이머 생성
+	int a = 0;
+	auto timer1 = Timer::create(a);
 	showTimer(timer1);
 
-	timer1->setOnTimerCallback([&](TimerPtr timer)->bool {
-		showMessage("실패ㅠㅠ");
-		auto timer2 = Timer::create(1);
-		timer2->start();
 
-		timer2->setOnTimerCallback([&](TimerPtr timer)->bool {
-			endGame();
-			return true;
-			});
+	auto timer2 = Timer::create(1);
+	
+	timer2->setOnTimerCallback([&](TimerPtr timer)->bool {
+		a++;
+		timer1->set(a);
+		timer2->set(1);
+		timer2->start();
 		return true;
 		});
 
-	long long t1;
+
+
 	//시작하는 버튼 생성
 	auto button = Object::create("Images/시작.png", scene, 0, 400);
 	button->setScale(0.2f);
 	button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-		timer1->start();
 		button->hide();
 		game_set();
 		showMessage("게임 시작!");
-	     t1 = time(NULL);
+		timer2->start();
 		return true;
 		});
 
@@ -103,17 +105,15 @@ void Start() {
 			int num = game_index(object);
 			if (check(num)) {
 				game_move(num);
-				if (checkend()) {
-					timer1->stop();
-					long long t2= time(NULL);
-					int a = t2 - t1;
+				if (checkend()) {			
 					char s1[100];
+					timer2->stop();
 					sprintf(s1, "성공!!!!!! %d초 걸렸습니다.", a);
 					showMessage(s1);
-					auto timer2 = Timer::create(1);
-					timer2->start();
+					auto timer3 = Timer::create(3);
+					timer3->start();
 
-					timer2->setOnTimerCallback([&](TimerPtr timer)->bool {
+					timer3->setOnTimerCallback([&](TimerPtr timer)->bool {
 						endGame();
 						return true;
 						});
@@ -133,7 +133,7 @@ void Start() {
 	auto howto = Object::create("Images/게임방법.png", scene, 0, 1000);
 	howto->setScale(0.8f);
 
-	auto explain = Object::create("Images/how.png", scene, 150, 450, false);
+	auto explain = Object::create("Images/how.png", scene, 150, 550, false);
 
 
 	howto->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
